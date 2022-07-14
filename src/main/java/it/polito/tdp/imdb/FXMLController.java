@@ -7,6 +7,7 @@ package it.polito.tdp.imdb;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.imdb.model.Actor;
 import it.polito.tdp.imdb.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -35,10 +36,10 @@ public class FXMLController {
     private Button btnSimulazione; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxGenere"
-    private ComboBox<?> boxGenere; // Value injected by FXMLLoader
+    private ComboBox<String> boxGenere; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxAttore"
-    private ComboBox<?> boxAttore; // Value injected by FXMLLoader
+    private ComboBox<Actor> boxAttore; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtGiorni"
     private TextField txtGiorni; // Value injected by FXMLLoader
@@ -48,11 +49,30 @@ public class FXMLController {
 
     @FXML
     void doAttoriSimili(ActionEvent event) {
-
+    	
+    	Actor attore = boxAttore.getValue();
+    	txtResult.appendText("Gli attori simili a: "+attore.toString());
+    	txtResult.appendText(this.model.doSimile(attore).toString());
+    	
     }
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
+
+		txtResult.clear();
+		boxAttore.getItems().clear();
+		 String genere = boxGenere.getValue();   	
+		    	
+		if (genere!=null) {
+		    		this.model.creaGrafo(genere);
+		    		
+		    		boxAttore.getItems().addAll(this.model.getAllVertici());
+		    		txtResult.appendText("Grafo creato!!!\n");
+		        	txtResult.appendText("# VERTICI: "+model.nVertici()+"\n");
+		        	txtResult.appendText("# ARCHI: "+model.nArchi()+"\n");
+		        	
+		    	}else
+		txtResult.appendText("Verifica di aver inserito tutto correttamente!\n");
 
     }
 
@@ -75,5 +95,7 @@ public class FXMLController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	
+    	boxGenere.getItems().addAll(this.model.listAllGenres());
     }
 }
